@@ -376,7 +376,13 @@ module Pod
         if requires_fobjc_arc?
           ld_flags << '-fobjc-arc'
         end
-        libraries.each { |l| ld_flags << %(-l"#{l}") }
+
+        libraries.each { |l|
+          if !libraries.include?("#{l}-#{target.platform.string_name}")
+            ld_flags << %(-l"#{l}")
+          end
+        }
+
         frameworks.each { |f| ld_flags << '-framework' << %("#{f}") }
         weak_frameworks.each { |f| ld_flags << '-weak_framework' << %("#{f}") }
         ld_flags
